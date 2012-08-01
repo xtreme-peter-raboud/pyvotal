@@ -76,7 +76,7 @@ class Note(PyvotalEmbeddedDocument):
     id = IntField()
     text = StringField()
     author = StringField()
-    noted_ad = PyDateTimeField()
+    noted_at = PyDateTimeField()
     _tagname = 'note'
 
 
