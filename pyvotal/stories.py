@@ -39,13 +39,17 @@ class StoryManager(ResourceManager):
         base_url = 'projects/%s/stories' % project_id
         super(StoryManager, self).__init__(client, Story, base_url, *args)
 
+    def _collate_filter_param(self, key, value):
+        if key == 'raw':
+            return value
+        else:
+            if ' ' in value:
+                value = '"%s"' % value
+            return '%s:%s' % (key,value)
+
     def _contribute_to_all_request(self, url, params, **kwargs):
         if len(kwargs.keys()):
-            query = ['%s:%s' %
-                     (x,
-                      '"%s"' % kwargs[x] if ' ' in kwargs[x] else kwargs[x])
-                      for x in kwargs.keys()]
-            params['filter'] = ' '.join(query)
+            params['filter'] = ' '.join([self._collate_filter_param(k,v) for k,v in kwargs.iteritems()])
         return (url, params)
 
     def deliver_all_finished(self):
